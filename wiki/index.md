@@ -4,6 +4,8 @@ Running archive of all Alfie "The Bitcoin KID" Blaze war logs.
 Each entry corresponds to one source URL, one scenario, one cycle.
 
 <!-- logs will be appended below -->
+- [LOG-20260330-180148](logs/LOG-20260330-180148.md) — 2026-03-30 — Treef Substack
+
 - [LOG-20260330-173741](logs/LOG-20260330-173741.md) — 2026-03-30 — NoBallGames Substack
 
 - [LOG-20260330-173408](logs/LOG-20260330-173408.md) — 2026-03-30 — Wuffi Inu Medium
