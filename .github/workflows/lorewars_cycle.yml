@@ -1,13 +1,14 @@
-name: Lorewars Daily Cycle
+name: Lorewars Cycle
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: "0 6 * * *"
+    - cron: "*/15 * * * *"  # runs every 15 mins
+  workflow_dispatch:
 
 jobs:
   run-cycle:
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
 
@@ -45,6 +46,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .
-          git diff --cached --quiet || git commit -m "chore: lorewars cycle $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git add -A
+          git commit -m "chore: lorewars cycle $(date -u +%Y-%m-%dT%H:%M:%SZ)" || echo "No changes to commit"
+          git pull --rebase origin main || true
           git push
