@@ -1,16 +1,16 @@
-from dotenv import load_dotenv
-load_dotenv()
 #!/usr/bin/env python3
 """
 Lorewars Phase 1 — Main Cycle Entrypoint
 """
+from dotenv import load_dotenv
+load_dotenv()
+
 import json
 import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-# Allow imports from project root
 sys.path.insert(0, str(Path(__file__).parent))
 
 from crawlers import rss_crawler
@@ -55,12 +55,10 @@ def main() -> None:
     print(f"DRY_RUN={DRY_RUN}")
     print("=" * 60)
 
-    # Step 1: Crawl RSS feeds and populate queue
     print("\n[1/7] Crawling RSS and archive sources...")
     new_urls = rss_crawler.run()
     print(f"      Queue length: {queue.length()}")
 
-    # Step 2: Select one source URL
     print("\n[2/7] Selecting source URL...")
     source_entry = source_selector.select()
     if source_entry is None:
@@ -68,26 +66,21 @@ def main() -> None:
         return
     print(f"      Selected: {source_entry['url']}")
 
-    # Step 3: Generate Alfie war log
     print("\n[3/7] Generating war log...")
     log_dict = log_generator.generate(source_entry)
     print(f"      Slug: {log_dict['slug']}")
 
-    # Step 4: Publish wiki page
     print("\n[4/7] Publishing wiki page...")
     log_path = wiki_publisher.publish(log_dict)
     print(f"      Written: {log_path}")
 
-    # Step 5: Publish to IPFS
     print("\n[5/7] Publishing to IPFS...")
     cid = ipfs_publisher.publish(log_dict)
     print(f"      CID: {cid}")
 
-    # Step 6: Build search index
     print("\n[6/7] Building search index...")
     search_index.build()
 
-    # Step 7: Update memory state
     print("\n[7/7] Updating memory state...")
     history.add_entry(
         url=source_entry["url"],

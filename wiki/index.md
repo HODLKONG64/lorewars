@@ -4,6 +4,8 @@ Running archive of all Alfie "The Bitcoin KID" Blaze war logs.
 Each entry corresponds to one source URL, one scenario, one cycle.
 
 <!-- logs will be appended below -->
+- [LOG-20260330-173408](logs/LOG-20260330-173408.md) — 2026-03-30 — Wuffi Inu Medium
+
 - [LOG-20260330-152414](logs/LOG-20260330-152414.md) — 2026-03-30 — Bitcoin.com Medium
 
 - [LOG-20260330-150005](logs/LOG-20260330-150005.md) — 2026-03-30 — WAX Medium
