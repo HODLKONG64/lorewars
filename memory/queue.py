@@ -39,5 +39,11 @@ def all():
     return _load()
 
 
+def remove(url: str):
+    data = _load()
+    data = [item for item in data if item.get("url") != url]
+    _save(data)
+
+
 def clear():
     _save([])
