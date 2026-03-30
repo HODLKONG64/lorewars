@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+dist/
+build/
+*.log
+.DS_Store
+assets/images/generated/
+assets/images/daily/
+wiki/logs/
+wiki/daily/
+search-index.json
+logs-index.json
+daily-ledger.json
