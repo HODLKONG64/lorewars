@@ -1,5 +1,5 @@
 """
-Source selector with real signal scoring.
+Source selector with tiered signal scoring.
 """
 
 from memory import queue, history
@@ -11,17 +11,36 @@ KEYWORDS = [
     "finance", "economy", "market", "trading",
 ]
 
+SOURCE_WEIGHTS = {
+    "substack": 40,
+    "medium": 25,
+    "paragraph": 25,
+    "mirror": 20,
+    "coindesk": 20,
+    "cointelegraph": 20,
+    "decrypt": 18,
+    "bitcoin.com": 18,
+    "theblock": 18,
+    "bankless": 18,
+}
+
 
 def _score(entry: dict) -> int:
     url = entry.get("url", "").lower()
+    source_name = entry.get("source_name", "").lower()
     score = 0
 
-    # 🔥 keyword scoring
-    for k in KEYWORDS:
-        if k in url:
+    # source weighting
+    for source_key, weight in SOURCE_WEIGHTS.items():
+        if source_key in url or source_key in source_name:
+            score += weight
+
+    # keyword weighting
+    for keyword in KEYWORDS:
+        if keyword in url:
             score += 10
 
-    # 🔥 depth scoring (longer URLs still matter slightly)
+    # slight depth bonus
     score += len(url) // 10
 
     return score
