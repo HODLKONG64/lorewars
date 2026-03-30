@@ -1,0 +1,89 @@
+{
+  "sources": [
+    {
+      "name": "GraffPUNKS Substack",
+      "url": "https://graffpunks.substack.com/feed",
+      "type": "rss",
+      "priority": 100,
+      "enabled": true,
+      "primary": true
+    },
+    {
+      "name": "NoBallGames Substack",
+      "url": "https://noballgames.substack.com/feed",
+      "type": "rss",
+      "priority": 80,
+      "enabled": true
+    },
+    {
+      "name": "Treef Substack",
+      "url": "https://treefproject.substack.com/feed",
+      "type": "rss",
+      "priority": 70,
+      "enabled": true
+    },
+    {
+      "name": "GKniftyHEADS Medium",
+      "url": "https://medium.com/feed/@GKniftyHEADS",
+      "type": "rss",
+      "priority": 65,
+      "enabled": true
+    },
+    {
+      "name": "Charlie Buster Medium",
+      "url": "https://medium.com/feed/@iamcharliebuster",
+      "type": "rss",
+      "priority": 65,
+      "enabled": true
+    },
+    {
+      "name": "Graffiti Kings Medium",
+      "url": "https://medium.com/feed/@GRAFFITIKINGS",
+      "type": "rss",
+      "priority": 60,
+      "enabled": true
+    },
+    {
+      "name": "HODLWARRIORS Medium",
+      "url": "https://medium.com/feed/@HODLWARRIORS",
+      "type": "rss",
+      "priority": 60,
+      "enabled": true
+    },
+    {
+      "name": "Games4Punks Medium",
+      "url": "https://medium.com/feed/@games4punks",
+      "type": "rss",
+      "priority": 55,
+      "enabled": true
+    },
+    {
+      "name": "Graffpunks UK Medium",
+      "url": "https://medium.com/feed/@graffpunksuk",
+      "type": "rss",
+      "priority": 55,
+      "enabled": true
+    },
+    {
+      "name": "WAX Medium",
+      "url": "https://medium.com/feed/@wax-io",
+      "type": "rss",
+      "priority": 45,
+      "enabled": true
+    },
+    {
+      "name": "Bitcoin.com Medium",
+      "url": "https://medium.com/feed/@Bitcoin_Com",
+      "type": "rss",
+      "priority": 40,
+      "enabled": true
+    },
+    {
+      "name": "Wuffi Inu Medium",
+      "url": "https://medium.com/feed/@wuffi_inu",
+      "type": "rss",
+      "priority": 35,
+      "enabled": true
+    }
+  ]
+}
