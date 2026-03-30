@@ -1,15 +1,42 @@
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Virtual env
 .venv/
 .env
+
+# Build
 dist/
 build/
+
+# Logs
 *.log
+
+# OS junk
 .DS_Store
+Thumbs.db
+
+# Generated images
 assets/images/generated/
 assets/images/daily/
+
+# Wiki generated content
 wiki/logs/
 wiki/daily/
+
+# Search + indexes
 search-index.json
 logs-index.json
 daily-ledger.json
+
+# 🔥 CRITICAL (fix your conflict hell)
+memory/
+wiki/search_index.json
+wiki/sitemap.xml
+
+# Optional safety (recommended)
+*.tmp
+*.cache
