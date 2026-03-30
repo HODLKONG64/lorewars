@@ -46,27 +46,30 @@ def _fetch_article_text(url: str) -> str:
     try:
         with requests.Session() as session:
             session.headers.update(REQUEST_HEADERS)
-
             resp = session.get(url, timeout=20, allow_redirects=True)
+
+            if resp.status_code == 403:
+                resp = session.get(f"https://textise.net/showtext.aspx?strURL={url}", timeout=20)
+
             resp.raise_for_status()
 
             soup = BeautifulSoup(resp.text, "html.parser")
 
-            for tag in soup(["script", "style", "nav", "header", "footer", "aside", "noscript"]):
+            for tag in soup(["script","style","nav","header","footer","aside","noscript"]):
                 tag.decompose()
 
             article = soup.find("article") or soup.find("main") or soup.body
+
             if article:
-                text = _clean_text(article.get_text(separator=" ", strip=True))
+                text = _clean_text(article.get_text(" ", strip=True))
                 if text:
-                    print("[log_generator] Successfully fetched article content")
+                    print("[log_generator] SUCCESS FETCH")
                     return text[:ARTICLE_FETCH_LIMIT]
 
     except Exception as exc:
-        print(f"[log_generator] Failed to fetch article content: {exc}")
+        print(f"[log_generator] FAIL: {exc}")
 
     return ""
-
 
 def _build_preview(article_text: str, source_name: str) -> str:
     if article_text:
