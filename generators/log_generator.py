@@ -101,7 +101,7 @@ Stay locked.
     return narrative.strip()
 
 
-def generate(source_entry: dict) -> dict:
+def generate(source_entry: dict):
     url = source_entry["url"]
     source_name = source_entry.get("source_name", "Unknown")
 
@@ -110,7 +110,13 @@ def generate(source_entry: dict) -> dict:
 
     scenario = random.choice(SCENARIOS)
     tone = random.choice(TONES)
+
     article_text = _fetch_article_text(url)
+
+    # 🔥 QUALITY FILTER (CRITICAL)
+    if not article_text or len(article_text) < 300:
+        print("[log_generator] SKIPPED — weak or empty content")
+        return None
 
     narrative = _build_narrative(article_text, scenario, tone, source_name)
 
