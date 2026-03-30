@@ -1,8 +1,9 @@
+import asyncio
 import random
 from datetime import datetime, timezone
 
-import requests
 from bs4 import BeautifulSoup
+from crawl4ai import AsyncWebCrawler
 
 SCENARIOS = [
     "Alfie intercepts a coded transmission from a rival crew",
@@ -23,53 +24,32 @@ TONES = [
 ARTICLE_FETCH_LIMIT = 4000
 PREVIEW_LIMIT = 600
 
-REQUEST_HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/124.0.0.0 Safari/537.36"
-    ),
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-    "Accept-Language": "en-GB,en;q=0.9,en-US;q=0.8",
-    "Cache-Control": "no-cache",
-    "Pragma": "no-cache",
-    "Upgrade-Insecure-Requests": "1",
-    "Referer": "https://www.google.com/",
-}
-
 
 def _clean_text(text: str) -> str:
     return " ".join(text.split()).strip()
 
 
-def _fetch_article_text(url: str) -> str:
+async def _fetch_article_text_async(url: str) -> str:
     try:
-        with requests.Session() as session:
-            session.headers.update(REQUEST_HEADERS)
-            resp = session.get(url, timeout=20, allow_redirects=True)
+        async with AsyncWebCrawler() as crawler:
+            result = await crawler.arun(url=url, timeout=20)
+            markdown = result.markdown or ""
 
-            if resp.status_code == 403:
-                resp = session.get(f"https://textise.net/showtext.aspx?strURL={url}", timeout=20)
-
-            resp.raise_for_status()
-
-            soup = BeautifulSoup(resp.text, "html.parser")
-
-            for tag in soup(["script","style","nav","header","footer","aside","noscript"]):
-                tag.decompose()
-
-            article = soup.find("article") or soup.find("main") or soup.body
-
-            if article:
-                text = _clean_text(article.get_text(" ", strip=True))
+            if markdown:
+                soup = BeautifulSoup(markdown, "html.parser")
+                text = _clean_text(soup.get_text(" ", strip=True) or markdown)
                 if text:
                     print("[log_generator] SUCCESS FETCH")
                     return text[:ARTICLE_FETCH_LIMIT]
-
     except Exception as exc:
         print(f"[log_generator] FAIL: {exc}")
 
     return ""
+
+
+def _fetch_article_text(url: str) -> str:
+    return asyncio.run(_fetch_article_text_async(url))
+
 
 def _build_preview(article_text: str, source_name: str) -> str:
     if article_text:
