@@ -21,7 +21,7 @@ from memory import queue, history
 WORLD_STATE_PATH = Path(__file__).parent / "memory" / "world_state.json"
 ARC_STATE_PATH = Path(__file__).parent / "memory" / "arc_state.json"
 
-DRY_RUN = os.environ.get("LORWARS_DRY_RUN", "true").lower() == "true"
+DRY_RUN = os.environ.get("LOREWARS_DRY_RUN", "true").lower() == "true"
 
 
 def _load_json(path: Path) -> dict:
