@@ -27,12 +27,14 @@ REQUEST_HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/123.0.0.0 Safari/537.36"
+        "Chrome/124.0.0.0 Safari/537.36"
     ),
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "en-GB,en;q=0.9",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-GB,en;q=0.9,en-US;q=0.8",
     "Cache-Control": "no-cache",
     "Pragma": "no-cache",
+    "Upgrade-Insecure-Requests": "1",
+    "Referer": "https://www.google.com/",
 }
 
 
@@ -42,19 +44,23 @@ def _clean_text(text: str) -> str:
 
 def _fetch_article_text(url: str) -> str:
     try:
-        resp = requests.get(url, timeout=15, headers=REQUEST_HEADERS)
-        resp.raise_for_status()
+        with requests.Session() as session:
+            session.headers.update(REQUEST_HEADERS)
 
-        soup = BeautifulSoup(resp.text, "html.parser")
+            resp = session.get(url, timeout=20, allow_redirects=True)
+            resp.raise_for_status()
 
-        for tag in soup(["script", "style", "nav", "header", "footer", "aside", "noscript"]):
-            tag.decompose()
+            soup = BeautifulSoup(resp.text, "html.parser")
 
-        article = soup.find("article") or soup.find("main") or soup.body
-        if article:
-            text = _clean_text(article.get_text(separator=" ", strip=True))
-            if text:
-                return text[:ARTICLE_FETCH_LIMIT]
+            for tag in soup(["script", "style", "nav", "header", "footer", "aside", "noscript"]):
+                tag.decompose()
+
+            article = soup.find("article") or soup.find("main") or soup.body
+            if article:
+                text = _clean_text(article.get_text(separator=" ", strip=True))
+                if text:
+                    print("[log_generator] Successfully fetched article content")
+                    return text[:ARTICLE_FETCH_LIMIT]
 
     except Exception as exc:
         print(f"[log_generator] Failed to fetch article content: {exc}")
