@@ -1,2 +1,3 @@
-# lorewars
-lorewars
+# Lorewars
+
+Bootstrap test.
