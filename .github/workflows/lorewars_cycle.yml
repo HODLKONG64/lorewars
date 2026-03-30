@@ -1,0 +1,47 @@
+name: Lorewars Daily Cycle
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-cycle:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    env:
+      PARAGRAPH_API_KEY: ${{ secrets.PARAGRAPH_API_KEY }}
+      PARAGRAPH_PUBLICATION_ID: ${{ secrets.PARAGRAPH_PUBLICATION_ID }}
+      IPFS_ENDPOINT: ${{ secrets.IPFS_ENDPOINT }}
+      IPFS_API_KEY: ${{ secrets.IPFS_API_KEY }}
+      IPFS_API_SECRET: ${{ secrets.IPFS_API_SECRET }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      LOREWARS_BASE_URL: ${{ secrets.LOREWARS_BASE_URL }}
+      LORWARS_DRY_RUN: "false"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Lorewars cycle
+        run: python run_cycle.py
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add wiki/ memory/
+          git diff --cached --quiet || git commit -m "chore: lorewars cycle $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          git push
