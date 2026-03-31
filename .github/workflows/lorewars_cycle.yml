@@ -3,7 +3,12 @@ name: Lorewars Cycle
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 * * * *"
+    # Varied daily schedule — avoids fixed-interval patterns
+    - cron: "17 7 * * *"
+    - cron: "43 11 * * *"
+    - cron: "08 15 * * *"
+    - cron: "31 19 * * *"
+    - cron: "55 22 * * *"
 
 jobs:
   run-cycle:

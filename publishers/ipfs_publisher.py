@@ -9,7 +9,7 @@ LEDGERS_DIR = Path(__file__).parent.parent / "memory" / "ledgers"
 
 
 def publish(log_dict: dict) -> str:
-    dry_run = os.environ.get("LORWARS_DRY_RUN", "true").lower() == "true"
+    dry_run = os.environ.get("LOREWARS_DRY_RUN", "true").lower() == "true"
 
     endpoint = os.environ.get("IPFS_ENDPOINT", "").strip()
     api_key = os.environ.get("IPFS_API_KEY", "").strip()

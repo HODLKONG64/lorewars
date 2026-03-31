@@ -15,8 +15,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from crawlers import rss_crawler
-from generators import source_selector, log_generator
-from publishers import wiki_publisher, ipfs_publisher, search_index
+from generators import source_selector, log_generator, image_generator
+from publishers import wiki_publisher, ipfs_publisher, search_index, paragraph_publisher
 from memory import queue, history
 
 WORLD_STATE_PATH = Path(__file__).parent / "memory" / "world_state.json"
@@ -56,11 +56,13 @@ def main() -> None:
     print(f"DRY_RUN={DRY_RUN}", flush=True)
     print("=" * 60, flush=True)
 
+    # 1. Crawl sources → update queue
     print("[DEBUG] starting rss_crawler.run()", flush=True)
     new_urls = rss_crawler.run()
     print(f"[DEBUG] new_urls={new_urls}", flush=True)
     print(f"[DEBUG] queue length={queue.length()}", flush=True)
 
+    # 2. Select source URL
     print("[DEBUG] starting source_selector.select()", flush=True)
     source_entry = source_selector.select()
     print(f"[DEBUG] source_entry={source_entry}", flush=True)
@@ -69,26 +71,47 @@ def main() -> None:
         print("[DEBUG] No source available — aborting cycle.", flush=True)
         return
 
+    # 3. Generate log
     print("[DEBUG] starting log_generator.generate()", flush=True)
     log_dict = log_generator.generate(source_entry)
-    print(f"[DEBUG] log_dict={log_dict}", flush=True)
+    print(f"[DEBUG] log_dict slug={log_dict.get('slug') if log_dict else None}", flush=True)
 
     if not log_dict:
         print("[DEBUG] Skipped — weak content", flush=True)
         return
 
+    # 4. Generate image
+    print("[DEBUG] starting image_generator.generate()", flush=True)
+    image_path = image_generator.generate(log_dict)
+    print(f"[DEBUG] image_path={image_path}", flush=True)
+
+    # Store image path in log dict for wiki / memory
+    log_dict["image_path"] = str(image_path)
+
+    # 5. Update wiki
     print("[DEBUG] starting wiki_publisher.publish()", flush=True)
     log_path = wiki_publisher.publish(log_dict)
     print(f"[DEBUG] log_path={log_path}", flush=True)
 
+    # 6. Publish externally (Paragraph)
+    print("[DEBUG] starting paragraph_publisher.publish()", flush=True)
+    paragraph_url = paragraph_publisher.publish(log_dict)
+    print(f"[DEBUG] paragraph_url={paragraph_url}", flush=True)
+
+    # Store external URL back into log dict
+    log_dict["external_url"] = paragraph_url
+
+    # 7. IPFS / ledger
     print("[DEBUG] starting ipfs_publisher.publish()", flush=True)
     cid = ipfs_publisher.publish(log_dict)
     print(f"[DEBUG] cid={cid}", flush=True)
 
+    # 8. Rebuild search + logs indexes
     print("[DEBUG] starting search_index.build()", flush=True)
     search_index.build()
     print("[DEBUG] search index built", flush=True)
 
+    # 9. Update memory
     print("[DEBUG] starting history.add_entry()", flush=True)
     history.add_entry(
         url=source_entry["url"],
@@ -108,10 +131,12 @@ def main() -> None:
 
     print("=" * 60, flush=True)
     print("LOREWARS CYCLE COMPLETE", flush=True)
-    print(f"  Log slug  : {log_dict['slug']}", flush=True)
-    print(f"  Source    : {source_entry['source_name']}", flush=True)
-    print(f"  IPFS CID  : {cid}", flush=True)
-    print(f"  New URLs  : {new_urls}", flush=True)
+    print(f"  Log slug      : {log_dict['slug']}", flush=True)
+    print(f"  Source        : {source_entry['source_name']}", flush=True)
+    print(f"  Image         : {image_path}", flush=True)
+    print(f"  Paragraph URL : {paragraph_url}", flush=True)
+    print(f"  IPFS CID      : {cid}", flush=True)
+    print(f"  New URLs      : {new_urls}", flush=True)
     print("=" * 60, flush=True)
 
 
