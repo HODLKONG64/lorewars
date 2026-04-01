@@ -3,7 +3,7 @@ name: Lorewars Cycle
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "9 9 9 9 *"
 
 jobs:
   run-cycle:
